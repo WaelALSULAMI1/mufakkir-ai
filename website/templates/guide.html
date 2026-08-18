@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}دليل الاستخدام | مُفكر{% endblock %}
+{% block breadcrumb %}<span>دليل الاستخدام</span>{% endblock %}
+{% block content %}
+<div class="title-row">
+  <div>
+    <h1 class="page-title">رحلة المقترح في مُفكر</h1>
+    <p class="subtitle">خمس محطات واضحة: من اختيار القسم حتى قرار المدير.</p>
+  </div>
+  <a class="btn primary" href="/submit">ابدأ الآن</a>
+</div>
+
+<section class="official-panel guide-overview">
+  <div class="section-heading">
+    <h2>المسار كاملًا</h2>
+    <p>اتبع النقاط من اليمين إلى اليسار</p>
+  </div>
+  <ol class="guide-path">
+    <li>
+      <span class="guide-path-num">1</span>
+      <strong>القسم</strong>
+      <small>تجميع الأفكار</small>
+    </li>
+    <li>
+      <span class="guide-path-num">2</span>
+      <strong>المقترح</strong>
+      <small>عنوان الفكرة</small>
+    </li>
+    <li>
+      <span class="guide-path-num">3</span>
+      <strong>الحل</strong>
+      <small>أضفه إن وُجد</small>
+    </li>
+    <li>
+      <span class="guide-path-num">4</span>
+      <strong>تحليل مُفكر</strong>
+      <small>بدائل وتوصية</small>
+    </li>
+    <li>
+      <span class="guide-path-num">5</span>
+      <strong>المدير</strong>
+      <small>اعتماد أو تعديل</small>
+    </li>
+  </ol>
+</section>
+
+<section class="guide-journey" aria-label="خطوات الاستخدام">
+  <article class="guide-stop">
+    <div class="guide-art" aria-hidden="true">
+      <svg viewBox="0 0 160 140" fill="none">
+        <rect x="8" y="18" width="144" height="104" rx="18" fill="#d7f1f5"/>
+        <rect x="22" y="48" width="36" height="58" rx="8" fill="#0b7384"/>
+        <rect x="62" y="34" width="36" height="72" rx="8" fill="#3b2780"/>
+        <rect x="102" y="56" width="36" height="50" rx="8" fill="#0e9cb0"/>
+        <circle cx="40" cy="68" r="4" fill="#fff"/>
+        <circle cx="80" cy="54" r="4" fill="#fff"/>
+        <circle cx="120" cy="76" r="4" fill="#fff"/>
+        <path d="M18 118h124" stroke="#084956" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="guide-copy">
+      <span class="guide-role">للموظف</span>
+      <h2><b>1</b> اختر القسم</h2>
+      <p>حدد القسم الذي يرتبط به المقترح حتى تُحفظ الفكرة مع أفكار القسم نفسه، ويراجعها المدير ضمن مجموعتها.</p>
+    </div>
+  </article>
+
+  <article class="guide-stop">
+    <div class="guide-art" aria-hidden="true">
+      <svg viewBox="0 0 160 140" fill="none">
+        <rect x="34" y="16" width="92" height="112" rx="14" fill="#fff" stroke="#0b7384" stroke-width="3"/>
+        <rect x="48" y="32" width="64" height="10" rx="5" fill="#0e9cb0"/>
+        <rect x="48" y="50" width="64" height="8" rx="4" fill="#d7f1f5"/>
+        <rect x="48" y="64" width="48" height="8" rx="4" fill="#d7f1f5"/>
+        <rect x="48" y="78" width="56" height="8" rx="4" fill="#d7f1f5"/>
+        <circle cx="118" cy="28" r="16" fill="#c56a12"/>
+        <path d="M118 20v10" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="118" cy="36" r="1.8" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="guide-copy">
+      <span class="guide-role">للموظف</span>
+      <h2><b>2</b> سمِّ مقترحك</h2>
+      <p>اكتب عنوانًا يبرز الحل أو التحسين، ثم صف الوضع الحالي وأثره. إن وُجدت موارد أو قيود فاذكرها لأنها تدخل في التوصية.</p>
+    </div>
+  </article>
+
+  <article class="guide-stop">
+    <div class="guide-art" aria-hidden="true">
+      <svg viewBox="0 0 160 140" fill="none">
+        <circle cx="80" cy="58" r="28" fill="#efe8fb"/>
+        <path d="M80 38c12 0 22 9 22 20 0 8-5 14-12 18v8H70v-8c-7-4-12-10-12-18 0-11 10-20 22-20z" fill="#3b2780"/>
+        <rect x="70" y="86" width="20" height="8" rx="3" fill="#3b2780"/>
+        <rect x="66" y="96" width="28" height="6" rx="3" fill="#0e9cb0"/>
+        <path d="M118 40l8-14M132 58h16M118 76l8 14M42 40l-8-14M28 58H12M42 76l-8 14" stroke="#0e9cb0" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="guide-copy">
+      <span class="guide-role">للموظف</span>
+      <h2><b>3</b> أضف اقتراحك</h2>
+      <p>اكتب الحل الذي تراه مناسبًا، أو اترك الحقل فارغًا. مُفكر يضع فكرتك ضمن أربع طرق للتعامل ويقارن بينها قبل التوصية.</p>
+    </div>
+  </article>
+
+  <article class="guide-stop">
+    <div class="guide-art" aria-hidden="true">
+      <svg viewBox="0 0 160 140" fill="none">
+        <circle cx="80" cy="70" r="46" fill="#084956"/>
+        <circle cx="80" cy="70" r="32" fill="#0b7384"/>
+        <path d="M62 70h36M80 52v36" stroke="#d7f1f5" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="80" cy="70" r="8" fill="#fff"/>
+        <rect x="18" y="22" width="28" height="18" rx="6" fill="#efe8fb"/>
+        <rect x="114" y="22" width="28" height="18" rx="6" fill="#d7f1f5"/>
+        <rect x="18" y="100" width="28" height="18" rx="6" fill="#d7f1f5"/>
+        <rect x="114" y="100" width="28" height="18" rx="6" fill="#efe8fb"/>
+      </svg>
+    </div>
+    <div class="guide-copy">
+      <span class="guide-role accent">لمُفكر</span>
+      <h2><b>4</b> التحليل والنتيجة</h2>
+      <p>يقرأ مُفكر المقترح بالعربية ثم يجهّز صفحة النتيجة: الوضع الحالي، إجراء اليوم، أربع طرق للتعامل، والمقارنة والتوصية. هذه مساعدة للقرار وليست اعتمادًا تلقائيًا.</p>
+    </div>
+  </article>
+
+  <article class="guide-stop">
+    <div class="guide-art" aria-hidden="true">
+      <svg viewBox="0 0 160 140" fill="none">
+        <rect x="18" y="24" width="124" height="96" rx="16" fill="#fff" stroke="#0b7384" stroke-width="3"/>
+        <rect x="18" y="24" width="124" height="22" rx="16" fill="#0b7384"/>
+        <rect x="32" y="56" width="14" height="48" rx="4" fill="#3b2780"/>
+        <rect x="54" y="68" width="14" height="36" rx="4" fill="#0e9cb0"/>
+        <rect x="76" y="50" width="14" height="54" rx="4" fill="#0b7384"/>
+        <rect x="98" y="74" width="14" height="30" rx="4" fill="#d7f1f5"/>
+        <rect x="120" y="62" width="14" height="42" rx="4" fill="#c56a12"/>
+      </svg>
+    </div>
+    <div class="guide-copy">
+      <span class="guide-role">للمدير</span>
+      <h2><b>5</b> مراجعة المدير</h2>
+      <p>يرى المدير أفضل خمسة مقترحات في كل قسم، ويفتح التقرير كاملًا، ثم يعتمد أو يرفض أو يطلب تعديلًا مع ملاحظة تصلك في اقتراحاتك السابقة.</p>
+    </div>
+  </article>
+</section>
+
+<section class="official-panel">
+  <div class="notice warning"><strong>مهم:</strong> نتيجة مُفكر أداة مساعدة في اتخاذ القرار وليست اعتمادًا إداريًا تلقائيًا. القرار النهائي للمدير.</div>
+  <div class="form-actions">
+    <a class="btn primary" href="/submit">تقديم مقترح</a>
+    <a class="btn secondary" href="/my-suggestions">اقتراحاتي السابقة</a>
+  </div>
+</section>
+{% endblock %}

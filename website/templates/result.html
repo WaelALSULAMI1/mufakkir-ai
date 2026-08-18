@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+{% from "_macros.html" import proposal_meta %}
+{% block title %}نتيجة المقترح | مُفكر{% endblock %}
+{% block breadcrumb %}<span>نتيجة التحليل</span>{% endblock %}
+{% block content %}
+<div class="title-row">
+  <h1 class="page-title">تحليل المقترح</h1>
+  {% if manager_view %}<a class="btn secondary" href="/manager?department={{ suggestion.department | urlencode }}">العودة للوحة المدير</a>{% endif %}
+</div>
+{% if just_submitted %}
+<div class="notice success" role="status">
+  وصل المقترح{% if suggestion.public_code %} برقم <strong>{{ suggestion.public_code }}</strong>{% endif %} ويحتاج قرار المدير.
+</div>
+{% endif %}
+{% if suggestion.manager_decision %}
+<div class="notice {{ 'success' if suggestion.manager_decision == 'adopted' else 'warning' if suggestion.manager_decision == 'modified' else 'danger' }} decision-banner decision-{{ suggestion.manager_decision }}">
+  الحالة: <strong>{{ decision_labels.get(suggestion.manager_decision, suggestion.manager_decision) }}</strong>
+  {% if suggestion.manager_note %}<span> — {{ suggestion.manager_note }}</span>{% endif %}
+</div>
+{% else %}
+<div class="notice warning">الحالة: <strong>{{ pending_review_label }}</strong></div>
+{% endif %}
+
+<section class="official-panel result-head">
+  <div>
+    <span class="muted">{{ suggestion.department }}</span>
+    {% if suggestion.public_code or suggestion.created_display %}
+    <p class="ref-code meta-pills">
+      {% if suggestion.public_code %}
+      <span class="meta-pill meta-pill-code">رقم المقترح <strong dir="ltr">{{ suggestion.public_code }}</strong></span>
+      <button type="button" class="copy-btn" data-copy="{{ suggestion.public_code }}">نسخ</button>
+      {% endif %}
+      {% if suggestion.created_display %}
+      <span class="meta-pill meta-pill-date">{{ suggestion.created_display }}</span>
+      {% endif %}
+    </p>
+    {% endif %}
+    {% if manager_view and suggestion.owner_public_code %}
+    <p class="ref-code meta-pills">
+      <span class="meta-pill meta-pill-soft">الموظف <strong dir="ltr">{{ suggestion.owner_public_code }}</strong>{% if suggestion.owner_full_name %} — {{ suggestion.owner_full_name }}{% endif %}</span>
+      <button type="button" class="copy-btn" data-copy="{{ suggestion.owner_public_code }}">نسخ</button>
+    </p>
+    {% endif %}
+    <h2>{{ suggestion.display_title or suggestion.title }}</h2>
+  </div>
+  {% if manager_view and suggestion.score is not none %}
+  <div class="score-box">
+    <span>الدرجة</span>
+    <strong>{{ suggestion.score }}</strong>
+    <small>من 100</small>
+  </div>
+  {% endif %}
+</section>
+
+{% if suggestion.status == 'analyzed' and suggestion.analysis %}
+{% set a = suggestion.analysis %}
+{% set s = a.score_breakdown if a.score_breakdown else none %}
+
+{% if a.recommendation %}
+<section class="official-panel proposal-hero">
+  <p class="proposal-kicker">التوصية</p>
+  <h2>{{ a.recommendation.decision }}</h2>
+  {% if a.recommendation.why %}<p class="proposal-why">{{ a.recommendation.why }}</p>{% endif %}
+  <div class="proposal-facts">
+    {% if a.recommendation.conditions %}
+    <article>
+      <h3>الشرط</h3>
+      <ul>{% for x in a.recommendation.conditions %}<li>{{ x }}</li>{% endfor %}</ul>
+    </article>
+    {% endif %}
+    {% if a.recommendation.do_not_do %}
+    <article>
+      <h3>لا تفعل</h3>
+      <ul>{% for x in a.recommendation.do_not_do %}<li>{{ x }}</li>{% endfor %}</ul>
+    </article>
+    {% endif %}
+    {% if a.immediate_containment %}
+    <article>
+      <h3>اليوم</h3>
+      <p>{{ a.immediate_containment.action }}</p>
+      {% if a.immediate_containment.mechanism and a.immediate_containment.mechanism != a.immediate_containment.action %}
+      <p>{{ a.immediate_containment.mechanism }}</p>
+      {% endif %}
+    </article>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+{% endif %}
+
+{% if manager_view %}
+<section class="official-panel">
+  <div class="section-heading">
+    <h2>قرار المدير</h2>
+  </div>
+  <form method="post" action="/manager/result/{{ suggestion.id }}/decision" class="portal-form" data-decision-form>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label>القرار
+      <select name="decision" required>
+        <option value="adopted" {{ 'selected' if suggestion.manager_decision == 'adopted' else '' }}>اعتماد</option>
+        <option value="modified" {{ 'selected' if suggestion.manager_decision == 'modified' else '' }}>طلب تعديل</option>
+        <option value="rejected" {{ 'selected' if suggestion.manager_decision == 'rejected' else '' }}>رفض</option>
+      </select>
+    </label>
+    <label>ملاحظة للموظف
+      <textarea name="manager_note" maxlength="500" rows="3" placeholder="اختياري">{{ suggestion.manager_note or '' }}</textarea>
+    </label>
+    <div class="form-actions">
+      <button class="btn primary" type="submit">حفظ القرار</button>
+    </div>
+  </form>
+</section>
+<dialog class="confirm-dialog" id="decisionConfirm" data-decision-dialog>
+  <p class="confirm-title" data-confirm-text>هل تعتمد هذا المقترح؟</p>
+  <p class="muted">سيصل إشعار للموظف بعد الحفظ.</p>
+  <div class="form-actions">
+    <button type="button" class="btn primary" data-confirm-yes>نعم، تأكيد</button>
+    <button type="button" class="btn secondary" data-confirm-no>إلغاء</button>
+  </div>
+</dialog>
+{% endif %}
+
+<section class="official-panel diff-panel">
+  <div class="split-grid">
+    <article class="voice-card voice-employee">
+      <h3>كلام الموظف</h3>
+      <p class="voice-title">{{ suggestion.display_title or suggestion.title }}</p>
+      <div class="voice-block">
+        <span>الوضع الحالي</span>
+        <p>{{ suggestion.problem }}</p>
+      </div>
+      {% if suggestion.employee_suggestion %}
+      <div class="voice-block">
+        <span>اقتراحه</span>
+        <p>{{ suggestion.employee_suggestion }}</p>
+      </div>
+      {% endif %}
+      {% if suggestion.resources %}
+      <div class="voice-block">
+        <span>الموارد</span>
+        <p>{{ suggestion.resources }}</p>
+      </div>
+      {% endif %}
+      {% if suggestion.constraints %}
+      <div class="voice-block">
+        <span>القيود</span>
+        <p>{{ suggestion.constraints }}</p>
+      </div>
+      {% endif %}
+    </article>
+    <article class="voice-card voice-mufakkir">
+      <h3>خلاصة مُفكّر</h3>
+      {% if suggestion.status == 'analyzed' and suggestion.analysis %}
+      <div class="voice-block">
+        <span>الوضع</span>
+        <p>{{ suggestion.analysis.problem_summary }}</p>
+      </div>
+      {% if suggestion.analysis.recommendation %}
+      <div class="voice-block">
+        <span>التوصية</span>
+        <p>{{ suggestion.analysis.recommendation.decision }}</p>
+      </div>
+      {% endif %}
+      {% else %}
+      <p class="muted">التحليل غير جاهز بعد.</p>
+      {% endif %}
+    </article>
+  </div>
+</section>
+
+{% if similar_items %}
+<section class="official-panel">
+  <div class="section-heading">
+    <h2>مقترحات مشابهة</h2>
+  </div>
+  <div class="ranking-list">
+    {% for item in similar_items %}
+    <a class="ranking-item ranking-link" href="/manager/result/{{ item.id }}">
+      <span class="status-chip decision-{{ item.review_kind }}">{{ item.review_label }}</span>
+      <div class="ranking-copy">
+        <strong>{{ item.display_title or item.title }}</strong>
+        {{ proposal_meta(item) }}
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if suggestion.status == 'analyzed' and suggestion.analysis %}
+{% set a = suggestion.analysis %}
+{% set s = a.score_breakdown if a.score_breakdown else none %}
+<div class="result-folds" id="full-report">
+  <details class="result-fold">
+    <summary>الوضع</summary>
+    <p>{{ a.problem_summary }}</p>
+  </details>
+  {% if a.immediate_containment %}
+  <details class="result-fold">
+    <summary>إجراء اليوم</summary>
+    <p><strong>{{ a.immediate_containment.action }}</strong></p>
+    {% if a.immediate_containment.mechanism and a.immediate_containment.mechanism != a.immediate_containment.action %}
+    <p>{{ a.immediate_containment.mechanism }}</p>
+    {% endif %}
+    {% if a.immediate_containment.requirements %}<p><strong>نحتاج:</strong> {{ a.immediate_containment.requirements | join('، ') }}</p>{% endif %}
+    {% if a.immediate_containment.risks %}<p><strong>المخاطر:</strong> {{ a.immediate_containment.risks | join('، ') }}</p>{% endif %}
+    {% if a.immediate_containment.stop_condition %}<p><strong>يتوقف عند:</strong> {{ a.immediate_containment.stop_condition }}</p>{% endif %}
+  </details>
+  {% endif %}
+  <details class="result-fold">
+    <summary>حقائق وتخمينات</summary>
+    <h3>من كلام الموظف</h3>
+    {% if a.facts %}
+    <ul>{% for x in a.facts %}<li>{{ x }}</li>{% endfor %}</ul>
+    {% else %}
+    <p class="muted">لا توجد جمل كافية.</p>
+    {% endif %}
+    <h3>تخمين يحتاج تحققًا</h3>
+    {% if a.hypotheses %}
+    <ul>{% for x in a.hypotheses %}<li><strong>{{ x.hypothesis }}</strong><small>{{ x.evidence_status }} — {{ x.verification }}</small></li>{% endfor %}</ul>
+    {% else %}
+    <p class="muted">لا توجد تخمينات.</p>
+    {% endif %}
+  </details>
+  {% if a.missing_information %}
+  <details class="result-fold">
+    <summary>أسئلة قبل القرار</summary>
+    <ul>{% for x in a.missing_information %}<li><strong>{{ x.question }}</strong><small>{{ x.why_it_matters }}</small></li>{% endfor %}</ul>
+  </details>
+  {% endif %}
+  {% if a.employee_suggestion_evaluation %}
+  <details class="result-fold">
+    <summary>حل الموظف</summary>
+    <div class="verdict">{{ (verdict_labels|default({})).get(a.employee_suggestion_evaluation.verdict, a.employee_suggestion_evaluation.verdict) }}</div>
+    <p>{{ a.employee_suggestion_evaluation.suggestion }}</p>
+    {% if a.employee_suggestion_evaluation.strengths %}<p><strong>القوة:</strong> {{ a.employee_suggestion_evaluation.strengths | join('، ') }}</p>{% endif %}
+    {% if a.employee_suggestion_evaluation.risks %}<p><strong>المخاطر:</strong> {{ a.employee_suggestion_evaluation.risks | join('، ') }}</p>{% endif %}
+    {% if a.employee_suggestion_evaluation.required_evidence %}<p><strong>نتحقق من:</strong> {{ a.employee_suggestion_evaluation.required_evidence | join('، ') }}</p>{% endif %}
+  </details>
+  {% endif %}
+  <details class="result-fold">
+    <summary>الخيارات</summary>
+    <div class="alternatives-grid">
+      {% for alt in a.alternatives %}
+      <article class="alternative-card">
+        <span class="number">{{ loop.index }}</span>
+        {% if alt.kind %}<span class="alt-kind">{{ (alt_kind_labels|default({})).get(alt.kind, alt.kind) }}</span>{% endif %}
+        <h3>{{ alt.name }}</h3>
+        <p>{{ alt.idea }}</p>
+        <dl>
+          <div><dt>الفائدة</dt><dd>{{ alt.impact }}</dd></div>
+          <div><dt>السرعة</dt><dd>{{ alt.speed }}</dd></div>
+          <div><dt>التكلفة</dt><dd>{{ alt.cost }}</dd></div>
+          <div><dt>التراجع</dt><dd>{{ alt.reversibility }}</dd></div>
+        </dl>
+        {% if alt.risks %}<p class="alt-note"><strong>المخاطر:</strong> {{ alt.risks | join('، ') }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </details>
+  {% if a.comparison %}
+  <details class="result-fold">
+    <summary>الآن ولاحقًا</summary>
+    <p><strong>الآن:</strong> {{ a.comparison.best_immediate_option }}</p>
+    <p><strong>لاحقًا:</strong> {{ a.comparison.best_long_term_option }}</p>
+    {% if a.comparison.tradeoffs %}<p>{{ a.comparison.tradeoffs }}</p>{% endif %}
+  </details>
+  {% endif %}
+  <details class="result-fold">
+    <summary>التجربة والخطوات</summary>
+    {% if a.next_actions %}
+    <h3>بعد القرار</h3>
+    <ol>
+      {% for x in a.next_actions %}
+      <li>{{ x.action }} <small>{{ x.owner }} — {{ x.timing }}</small></li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+    {% if a.pilot %}
+    <h3>تجربة محدودة</h3>
+    <p>{{ a.pilot.scope }}</p>
+    {% if a.pilot.steps %}<ol>{% for x in a.pilot.steps %}<li>{{ x }}</li>{% endfor %}</ol>{% endif %}
+    {% if a.pilot.success_metrics %}<p><strong>نجاحها:</strong> {{ a.pilot.success_metrics | join('، ') }}</p>{% endif %}
+    {% if a.pilot.rollback_trigger %}<p><strong>إلغاؤها:</strong> {{ a.pilot.rollback_trigger }}</p>{% endif %}
+    {% endif %}
+  </details>
+  {% if a.confidence %}
+  <details class="result-fold">
+    <summary>اكتمال الملف</summary>
+    <p><strong>{{ a.confidence.level }}</strong>{% if a.confidence.reason %} — {{ a.confidence.reason }}{% endif %}</p>
+  </details>
+  {% endif %}
+  {% if manager_view and s %}
+  <details class="result-fold">
+    <summary>الدرجة</summary>
+    <dl class="score-breakdown">
+      <div><dt>وضوح الوضع</dt><dd>{{ s.problem_value }}/20</dd></div>
+      <div><dt>الفائدة</dt><dd>{{ s.expected_impact }}/25</dd></div>
+      <div><dt>سهولة التنفيذ</dt><dd>{{ s.feasibility }}/20</dd></div>
+      <div><dt>الاستعجال</dt><dd>{{ s.urgency }}/10</dd></div>
+      <div><dt>التراجع</dt><dd>{{ s.reversibility }}/10</dd></div>
+      <div><dt>اكتمال الوصف</dt><dd>{{ s.evidence_quality }}/15</dd></div>
+    </dl>
+  </details>
+  {% endif %}
+</div>
+{% else %}
+<section class="official-panel empty-state">
+  <span class="service-icon">…</span>
+  <h2>تم حفظ المقترح</h2>
+  {% if suggestion.status == 'model_error' %}
+  <p>تعذر التحليل حاليًا. أعد المحاولة بعد قليل.</p>
+  {% if model_error %}<code>{{ model_error }}</code>{% endif %}
+  {% else %}
+  <p>النموذج غير مفعل. المقترح محفوظ.</p>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}الإشعارات | مُفكر{% endblock %}
+{% block breadcrumb %}<span>الإشعارات</span>{% endblock %}
+{% block content %}
+<h1 class="page-title">تحديثات مقترحاتك</h1>
+<section class="official-panel">
+  <div class="section-heading">
+    <h2>قرارات المدير</h2>
+    <p>اعتماد أو رفض أو طلب تعديل — القرار يظهر من أول نظرة</p>
+  </div>
+  {% if notifications %}
+  <div class="ranking-list">
+    {% for item in notifications %}
+    <a class="ranking-item ranking-link" href="/result/{{ item.suggestion_id }}">
+      <span class="status-chip decision-{{ item.kind }}">{{ decision_labels.get(item.kind, item.kind) }}</span>
+      <div class="ranking-copy">
+        <strong>{{ item.title }}</strong>
+        <small>{{ item.body or '' }}</small>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state small">
+    <h3>لا توجد إشعارات بعد</h3>
+    <p>عندما يعتمد المدير مقترحك أو يرفضه أو يطلب تعديله سيظهر التحديث هنا.</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

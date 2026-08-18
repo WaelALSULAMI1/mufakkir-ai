@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% from "_macros.html" import proposal_meta %}
+{% block title %}لوحة المدير | مُفكر{% endblock %}
+{% block breadcrumb %}<span>لوحة المدير</span>{% endblock %}
+{% block content %}
+{% set dep_q = selected_department | urlencode %}
+<div class="title-row">
+  <div>
+    <h1 class="page-title">لوحة المدير</h1>
+    <p class="subtitle">اعتمد أو ارفض أو اطلب تعديلًا. السجل وأفضل خمسة تظهر عند طلبها.</p>
+  </div>
+</div>
+<section class="official-panel manager-filter">
+  <form method="get" action="/manager" class="department-form" data-department-filter accept-charset="utf-8">
+    <input type="hidden" name="view" value="{{ board_view }}">
+    <label>القسم
+      <select name="department">
+        {% for dep in departments %}
+        <option value="{{ dep }}" {{ 'selected' if dep == selected_department else '' }}>{{ dep }}{% if counts.get(dep) %} ({{ counts.get(dep) }}){% endif %}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button class="btn primary" type="submit">عرض</button>
+  </form>
+  <nav class="manager-views" aria-label="عرض اللوحة">
+    <a class="{{ 'is-active' if board_view == 'review' else '' }}" href="/manager?department={{ dep_q }}">يحتاج قرار{% if pending_count %} ({{ pending_count }}){% endif %}</a>
+    <a class="{{ 'is-active' if board_view == 'top' else '' }}" href="/manager?department={{ dep_q }}&view=top">أفضل 5</a>
+    <a class="{{ 'is-active' if board_view == 'all' else '' }}" href="/manager?department={{ dep_q }}&view=all">سجل القسم{% if all_count %} ({{ all_count }}){% endif %}</a>
+  </nav>
+</section>
+
+{% if board_view == 'review' %}
+<section class="official-panel ranking-panel">
+  <div class="section-heading">
+    <div>
+      <h2>يحتاج قرارًا</h2>
+      <p>{{ selected_department }} — {{ pending_count }} بانتظارك</p>
+    </div>
+  </div>
+  {% if pending_review %}
+  <div class="ranking-list">
+    {% for item in pending_review %}
+    <article class="ranking-item suggestion-row status-pending-row">
+      <a class="ranking-link" href="/manager/result/{{ item.id }}">
+        <div class="ranking-copy">
+          <strong>{{ item.display_title or item.title }}</strong>
+          {{ proposal_meta(item, note=('لم يُحلَّل بعد' if not item.analysis_ready else '')) }}
+        </div>
+        {% if item.score is not none %}
+        <div class="ranking-score">
+          <strong>{{ item.score }}</strong>
+          <small>/ 100</small>
+        </div>
+        {% endif %}
+      </a>
+      {% if item.public_code %}
+      <button type="button" class="copy-btn" data-copy="{{ item.public_code }}" aria-label="نسخ رقم المقترح">نسخ</button>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state small">
+    <h3>لا يوجد قرار معلّق في هذا القسم</h3>
+    <p>المقترحات الجديدة تظهر هنا حتى تعتمدها أو ترفضها أو تطلب تعديلها.</p>
+  </div>
+  {% endif %}
+</section>
+{% elif board_view == 'top' %}
+<section class="official-panel ranking-panel">
+  <div class="section-heading">
+    <div>
+      <h2>أفضل 5</h2>
+      <p>{{ selected_department }} — حسب الدرجة بعد التحليل</p>
+    </div>
+  </div>
+  {% if top_five %}
+  <div class="ranking-list">
+    {% for item in top_five %}
+    <article class="ranking-item suggestion-row status-{{ item.review_kind }}-row">
+      <a class="ranking-link" href="/manager/result/{{ item.id }}">
+        <span class="rank">{{ loop.index }}</span>
+        <span class="status-chip decision-{{ item.review_kind }}">{{ item.review_label }}</span>
+        <div class="ranking-copy">
+          <strong>{{ item.display_title or item.title }}</strong>
+          {{ proposal_meta(item) }}
+        </div>
+        <div class="ranking-score">
+          <strong>{{ item.score }}</strong>
+          <small>/ 100</small>
+        </div>
+      </a>
+      {% if item.public_code %}
+      <button type="button" class="copy-btn" data-copy="{{ item.public_code }}" aria-label="نسخ رقم المقترح">نسخ</button>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state small">
+    <h3>لا توجد نتائج محللة بعد</h3>
+    <p>بعد التحليل تظهر أعلى خمس درجات هنا.</p>
+  </div>
+  {% endif %}
+</section>
+{% else %}
+<section class="official-panel ranking-panel">
+  <div class="section-heading">
+    <div>
+      <h2>سجل القسم</h2>
+      <p>{{ selected_department }} — {{ all_count }} محفوظ</p>
+    </div>
+  </div>
+  {% if all_suggestions %}
+  <div class="ranking-list">
+    {% for item in all_suggestions %}
+    <article class="ranking-item suggestion-row status-{{ item.review_kind }}-row">
+      <a class="ranking-link" href="/manager/result/{{ item.id }}">
+        <span class="status-chip decision-{{ item.review_kind }}">{{ item.review_label }}</span>
+        <div class="ranking-copy">
+          <strong>{{ item.display_title or item.title }}</strong>
+          {{ proposal_meta(item, note=('تعذر التحليل' if item.status == 'model_error' else ('لم يُحلَّل بعد' if not item.analysis_ready else ''))) }}
+        </div>
+        {% if item.score is not none %}
+        <div class="ranking-score">
+          <strong>{{ item.score }}</strong>
+          <small>/ 100</small>
+        </div>
+        {% endif %}
+      </a>
+      {% if item.public_code %}
+      <button type="button" class="copy-btn" data-copy="{{ item.public_code }}" aria-label="نسخ رقم المقترح">نسخ</button>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state small">
+    <h3>لا يوجد مقترح في هذا القسم</h3>
+    <p>إذا اختفى مقترح قديم، غالبًا فُتحت نسخة أخرى من الموقع.</p>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}

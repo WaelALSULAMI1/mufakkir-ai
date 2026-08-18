@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_macros.html" import proposal_meta %}
+{% block title %}اقتراحاتي السابقة | مُفكر{% endblock %}
+{% block breadcrumb %}<span>اقتراحاتي السابقة</span>{% endblock %}
+{% block content %}
+<div class="title-row">
+  <div>
+    <h1 class="page-title">اقتراحاتي السابقة</h1>
+    <p class="subtitle">كل مقترح تقدمه يبدأ بحالة «{{ pending_review_label }}» حتى يضع المدير قراره أو ملاحظته.</p>
+  </div>
+  <a class="btn primary" href="/submit">مقترح جديد</a>
+</div>
+<nav class="filter-chips" aria-label="تصفية حسب الحالة">
+  <a class="{{ 'is-active' if status_filter == 'all' else '' }}" href="/my-suggestions">الكل</a>
+  <a class="{{ 'is-active' if status_filter == 'pending' else '' }}" href="/my-suggestions?status=pending">بانتظار القرار</a>
+  <a class="{{ 'is-active' if status_filter == 'adopted' else '' }}" href="/my-suggestions?status=adopted">اُعتمد</a>
+  <a class="{{ 'is-active' if status_filter == 'rejected' else '' }}" href="/my-suggestions?status=rejected">رُفض</a>
+  <a class="{{ 'is-active' if status_filter == 'modified' else '' }}" href="/my-suggestions?status=modified">طُلب تعديل</a>
+</nav>
+<section class="official-panel">
+  <div class="section-heading">
+    <h2>سجل مقترحاتك</h2>
+    <p>اضغط على المقترح لعرض التحليل وتحديث المدير</p>
+  </div>
+  {% if suggestions %}
+  <div class="ranking-list">
+    {% for item in suggestions %}
+    <article class="ranking-item suggestion-row">
+      <a class="ranking-link" href="/result/{{ item.id }}">
+        <span class="status-chip decision-{{ item.review_kind }}">{{ item.review_label }}</span>
+        <div class="ranking-copy">
+          <strong>{{ item.title }}</strong>
+          {{ proposal_meta(item, note=item.department, note_kind='soft') }}
+          {% if item.manager_note %}<small class="manager-update">تحديث المدير: {{ item.manager_note }}</small>{% endif %}
+        </div>
+      </a>
+      {% if item.public_code %}
+      <button type="button" class="copy-btn" data-copy="{{ item.public_code }}" aria-label="نسخ رقم المقترح">نسخ الرقم</button>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state small">
+    <h3>لا توجد مقترحات بعد</h3>
+    <p>{% if status_filter != 'all' %}لا يوجد مقترح بهذه الحالة. جرّب تصفية أخرى.{% else %}بعد إرسال أول مقترح سيظهر هنا مع حالة المراجعة.{% endif %}</p>
+    <p><a class="btn primary" href="/submit">تقديم مقترح</a></p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+.venv/
+.venv_old/
+__pycache__/
+*.pyc
+.env
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/audit.log
+data/audit.log.1

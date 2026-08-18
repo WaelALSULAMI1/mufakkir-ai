@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}تقديم مقترح | مُفكر{% endblock %}
+{% block breadcrumb %}<span>تقديم مقترح جديد</span>{% endblock %}
+{% block content %}
+<h1 class="page-title">إنشاء مقترح جديد</h1>
+<section class="official-panel form-panel" id="submitPanel">
+  <div class="notice info" id="modelStatus">مُفكر يستعد للقراءة...</div>
+  <div class="notice info">اكتب المعلومات المتوفرة فقط. لا تضف بيانات شخصية حساسة أو معلومات سرية داخل المقترح.</div>
+  <div class="wizard-progress" data-wizard-progress>
+    <div class="wizard-track" aria-hidden="true"><span data-wizard-bar style="width: 33%"></span></div>
+    <ol class="wizard-steps">
+      <li class="is-active" data-step-tab="1"><b>1</b> القسم</li>
+      <li data-step-tab="2"><b>2</b> المقترح</li>
+      <li data-step-tab="3"><b>3</b> الحل والقيود</li>
+    </ol>
+    <p class="wizard-progress-label" data-wizard-label>الخطوة 1 من 3</p>
+  </div>
+  {% if errors %}<div class="notice danger"><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+  <form method="post" action="/submit" class="portal-form" data-loading-form data-wizard>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="wizard-step is-active" data-step="1">
+      <h2 class="wizard-heading">القسم المختص</h2>
+      <p class="muted">اختر القسم الذي يخصه المقترح حتى يصل للمراجع المناسب.</p>
+      <label>القسم <em>*</em>
+        <select name="department" required>
+          <option value="">اختر القسم</option>
+          {% for dep in departments %}<option value="{{ dep }}" {{ 'selected' if values.get('department') == dep else '' }}>{{ dep }}</option>{% endfor %}
+        </select>
+      </label>
+    </div>
+    <div class="wizard-step" data-step="2">
+      <h2 class="wizard-heading">المقترح</h2>
+      <p class="muted">سمِّ الفكرة بما يبرز الحل، ثم اشرح الوضع الذي تريد تحسينه.</p>
+      <label>عنوان المقترح <em>*</em>
+        <input name="title" maxlength="180" required value="{{ values.get('title','') }}" placeholder="مثال: تسريع إنهاء معاملات المراجعين">
+      </label>
+      <label>الوضع الحالي <em>*</em>
+        <textarea name="problem" maxlength="5000" required rows="6" placeholder="ما الذي يحدث اليوم؟ وما أثره على العمل؟">{{ values.get('problem','') }}</textarea>
+      </label>
+    </div>
+    <div class="wizard-step" data-step="3">
+      <h2 class="wizard-heading">الحل والقيود</h2>
+      <p class="muted">اقتراحك اختياري. الموارد والقيود تساعد على مقترح واقعي.</p>
+      <label>اقتراح الموظف
+        <textarea name="employee_suggestion" maxlength="5000" rows="5" placeholder="اكتب حلك المقترح إن وجد">{{ values.get('employee_suggestion','') }}</textarea>
+        <small class="field-hint">اختياري. سيظهر تقييمه في صفحة النتيجة ضمن البديل الثالث.</small>
+      </label>
+      <div class="form-two">
+        <label>الموارد المتاحة
+          <textarea name="resources" maxlength="2500" rows="4" placeholder="إن وجدت">{{ values.get('resources','') }}</textarea>
+          <small class="field-hint">إن كُتبت تُراعى في الإجراء الفوري والتوصية النهائية.</small>
+        </label>
+        <label>القيود
+          <textarea name="constraints" maxlength="2500" rows="4" placeholder="مثل وقت، ميزانية، أنظمة قائمة...">{{ values.get('constraints','') }}</textarea>
+          <small class="field-hint">إن كُتبت تُراعى في القرار النهائي ولا يُقترح ما يكسرها.</small>
+        </label>
+      </div>
+    </div>
+    <div class="form-actions wizard-nav">
+      <button class="btn secondary" type="button" data-wizard-prev hidden>السابق</button>
+      <button class="btn primary" type="button" data-wizard-next hidden>التالي</button>
+      <button class="btn primary" type="submit" data-wizard-submit>إرسال وتحليل المقترح</button>
+      <button class="btn secondary" type="button" data-save-draft>حفظ وأكمل لاحقًا</button>
+      <a class="btn secondary" href="/">إلغاء</a>
+    </div>
+  </form>
+</section>
+<section class="official-panel wait-panel" id="waitPanel" hidden>
+  <div class="wait-sky" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="wait-core" aria-hidden="true">
+    <span class="wait-orbit"></span>
+    <span class="wait-orbit wait-orbit-slow"></span>
+    <span class="wait-spark"></span>
+    <img src="/static/img/hero_ai.png" alt="" width="180" height="180">
+  </div>
+  <p class="wait-kicker">مُفكّر يشتغل الآن</p>
+  <h2 class="wait-title">نرتّب فكرتك</h2>
+  <p class="wait-case" data-wait-case></p>
+  <p class="wait-copy">نقرأ نصك كما هو، ثم نبني أربع طرق وتوصية جاهزة للمدير.</p>
+  <div class="wait-meter" aria-hidden="true"><span data-wait-meter></span></div>
+  <div class="wait-meta">
+    <p class="wait-status" id="waitStatus" aria-live="polite">جاري فهم الفكرة<span class="wait-dots" aria-hidden="true"></span></p>
+    <p class="wait-timer" data-wait-timer dir="ltr">0:00</p>
+  </div>
+  <ol class="wait-steps" data-wait-steps>
+    <li data-wait-step="understanding">فهم النص</li>
+    <li data-wait-step="problem">ترتيب الوضع</li>
+    <li data-wait-step="proposal">بناء الخيارات</li>
+    <li data-wait-step="ready">تجهيز التوصية</li>
+  </ol>
+  <p class="wait-tip" data-wait-tip>التحليل العميق يأخذ عادة دقيقة إلى دقيقتين. أنت في المكان الصحيح.</p>
+  <ul class="wait-log" data-wait-log aria-hidden="true"></ul>
+  <div class="wait-skeleton">
+    <article>
+      <strong>التوصية</strong>
+      <span class="skel-line"></span>
+      <span class="skel-line short"></span>
+    </article>
+    <article>
+      <strong>الخيارات الأربع</strong>
+      <span class="skel-line"></span>
+      <span class="skel-line"></span>
+      <span class="skel-line short"></span>
+    </article>
+    <article>
+      <strong>إجراء اليوم</strong>
+      <span class="skel-line"></span>
+      <span class="skel-line short"></span>
+    </article>
+    <article>
+      <strong>التجربة</strong>
+      <span class="skel-line"></span>
+      <span class="skel-line short"></span>
+    </article>
+  </div>
+</section>
+{% endblock %}

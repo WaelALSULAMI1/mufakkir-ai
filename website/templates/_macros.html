@@ -1,0 +1,25 @@
+{% macro proposal_meta(item, note='', note_kind='note') %}
+<div class="meta-pills">
+  {% if item.public_code %}
+  <span class="meta-pill meta-pill-code" title="رقم المقترح">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3.2a1.8 1.8 0 1 0 0 3.6V17a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3.2a1.8 1.8 0 1 0 0-3.6V7z"></path>
+      <path d="M9 8.5v7M15 8.5v7"></path>
+    </svg>
+    <span dir="ltr">{{ item.public_code }}</span>
+  </span>
+  {% endif %}
+  {% if item.created_display %}
+  <span class="meta-pill meta-pill-date" title="تاريخ الوصول">
+    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3.5" y="5" width="17" height="15.5" rx="3"></rect>
+      <path d="M3.5 10h17M8 3.5V7M16 3.5V7"></path>
+    </svg>
+    <span>{{ item.created_display }}</span>
+  </span>
+  {% endif %}
+  {% if note %}
+  <span class="meta-pill meta-pill-{{ note_kind }}">{{ note }}</span>
+  {% endif %}
+</div>
+{% endmacro %}

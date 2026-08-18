@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}مُفكر | منصة الابتكار المؤسسي{% endblock %}
+{% block body_class %}page-home{% endblock %}
+{% block breadcrumb %}<span>منصة مُفكر</span>{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">أمانة محافظة جدة · منصة داخلية</span>
+    <h1>مُفكّر</h1>
+    <h2>يرتب فكرة الموظف حتى تصل للإدارة جاهزة للقرار</h2>
+    <p>مساحة واحدة لطرح المشكلة، وتحليلها بنموذج عربي متخصص، وإبراز أفضل المقترحات في كل قسم — والقرار يبقى للمدير.</p>
+    <div class="hero-actions">
+      {% if current_user and current_user.role == 'manager' %}
+      <a class="btn primary" href="/manager">لوحة المراجعة</a>
+      <a class="btn secondary" href="/guide">دليل الاستخدام</a>
+      {% else %}
+      <a class="btn primary" href="/submit">ابدأ بتقديم مقترح</a>
+      <a class="btn secondary" href="/guide">كيف تعمل المنصة؟</a>
+      {% endif %}
+    </div>
+    <ul class="hero-stats">
+      <li><strong>عربي متخصص</strong><span>نموذج مدرّب على مقترحات العمل</span></li>
+      <li><strong>أفضل 5</strong><span>ترتيب تلقائي داخل كل قسم</span></li>
+      <li><strong>قرار بشري</strong><span>التحليل مساعدة وليس اعتمادًا</span></li>
+    </ul>
+  </div>
+  <div class="hero-visual">
+    <img src="/static/img/hero_ai.png" alt="شخصية مُفكّر" width="420" height="420">
+  </div>
+</section>
+
+<section class="official-panel">
+  <div class="section-heading">
+    <div>
+      <h2>ثلاث خطوات واضحة</h2>
+      <p>من الفكرة إلى المراجعة دون تعقيد</p>
+    </div>
+  </div>
+  <div class="service-grid">
+    <a class="service-card" href="/submit">
+      <span class="service-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z"/></svg>
+      </span>
+      <strong>تقديم مقترح</strong>
+      <small>اكتب المشكلة، ولو عندك حل أضفه. مُفكّر يرتّب الباقي.</small>
+    </a>
+    <a class="service-card" href="/guide">
+      <span class="service-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 .01 20.01A10 10 0 0 0 12 2zm1 15h-2v-2h2zm0-3.5h-2V7h2z"/></svg>
+      </span>
+      <strong>تحليل مُفكّر</strong>
+      <small>مشكلة أوضح، بدائل عملية، وتوصية تساعد على اتخاذ القرار.</small>
+    </a>
+    <a class="service-card" href="/manager">
+      <span class="service-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3zm0 8h8v-6H3zm10 0h8V11h-8zm0-18v6h8V3z"/></svg>
+      </span>
+      <strong>مراجعة المدير</strong>
+      <small>أبرز خمسة في كل قسم، ثم اعتماد أو تعديل أو رفض.</small>
+    </a>
+  </div>
+</section>
+
+<section class="work-panel">
+  <div class="section-heading">
+    <div>
+      <h2>ما يميز عملنا</h2>
+      <p>المنصة ليست بوابة خدمات عامة — هي أداة ابتكار بُنيت حول النموذج</p>
+    </div>
+  </div>
+  <div class="work-grid">
+    <article class="work-card">
+      <span class="work-num">01</span>
+      <h3>نموذج عربي للمقترحات</h3>
+      <p>مُفكّر يقرأ وصف الموظف كما كُتب، ويرتّب المشكلة والبدائل والتوصية بلغة العمل لا بترجمة عامة.</p>
+    </article>
+    <article class="work-card">
+      <span class="work-num">02</span>
+      <h3>ترتيب داخل القسم</h3>
+      <p>كل مقترح يُحفظ مع تقييمه. لوحة المدير تعرض أعلى خمسة في القسم نفسه حتى لا تضيع الفكرة الجيدة.</p>
+    </article>
+    <article class="work-card">
+      <span class="work-num">03</span>
+      <h3>القرار يبقى للإدارة</h3>
+      <p>التحليل أداة مساعدة. الاعتماد أو الرفض أو طلب التعديل قرار بشري يصل للموظف بإشعار واضح.</p>
+    </article>
+  </div>
+</section>
+
+<section class="info-strip">
+  <strong>مسار الفكرة</strong>
+  <span>الموظف يكتب</span>
+  <b>←</b>
+  <span>مُفكّر يحلّل ويرتّب</span>
+  <b>←</b>
+  <span>المدير يقرر</span>
+</section>
+{% endblock %}

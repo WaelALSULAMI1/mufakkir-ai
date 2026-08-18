@@ -1,0 +1,8 @@
+torch
+transformers>=4.51.0
+peft
+accelerate
+bitsandbytes
+safetensors
+fastapi
+uvicorn

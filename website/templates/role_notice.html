@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ notice_title }} | مُفكر{% endblock %}
+{% block breadcrumb %}<span>{{ notice_title }}</span>{% endblock %}
+{% block content %}
+<section class="official-panel empty-state role-notice">
+  <span class="service-icon" aria-hidden="true">i</span>
+  <h1 class="page-title">{{ notice_title }}</h1>
+  <p>{{ notice_body }}</p>
+  <div class="form-actions">
+    <a class="btn primary" href="/manager">فتح لوحة المراجعة</a>
+    <a class="btn secondary" href="/">الرئيسية</a>
+  </div>
+</section>
+{% endblock %}

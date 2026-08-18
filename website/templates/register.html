@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}إنشاء حساب موظف | مُفكر{% endblock %}
+{% block breadcrumb %}<span>إنشاء حساب</span>{% endblock %}
+{% block content %}
+{% set errs = field_errors or {} %}
+{% set vals = values or {} %}
+<h1 class="page-title">إنشاء حساب موظف</h1>
+<section class="official-panel login-panel">
+  <h2>حساب لتقديم المقترحات ومتابعة قرار الإدارة</h2>
+  <p>حساب المدير موجود مسبقًا ولا يُسجَّل من هذه الصفحة.</p>
+  {% if error %}<div class="notice danger">{{ error }}</div>{% endif %}
+  <form method="post" action="/register" class="portal-form compact">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <label class="{{ 'has-error' if errs.get('full_name') else '' }}">الاسم
+      <input name="full_name" maxlength="80" required value="{{ vals.get('full_name','') }}">
+      {% if errs.get('full_name') %}<small class="field-error">{{ errs.full_name }}</small>{% endif %}
+    </label>
+    <label class="{{ 'has-error' if errs.get('email') else '' }}">البريد
+      <input type="email" name="email" autocomplete="username" required value="{{ vals.get('email','') }}">
+      {% if errs.get('email') %}<small class="field-error">{{ errs.email }}</small>{% endif %}
+    </label>
+    <label class="{{ 'has-error' if errs.get('password') else '' }}">كلمة المرور
+      <span class="password-field">
+        <input type="password" name="password" autocomplete="new-password" minlength="8" required>
+        <button type="button" class="password-toggle" data-password-toggle aria-pressed="false">إظهار</button>
+      </span>
+      <small class="field-hint">8 أحرف على الأقل. تُحفظ كهـاش وليس كنص.</small>
+      {% if errs.get('password') %}<small class="field-error">{{ errs.password }}</small>{% endif %}
+    </label>
+    <button class="btn primary full" type="submit">إنشاء الحساب والدخول</button>
+  </form>
+  <p class="login-extra">لديك حساب؟ <a href="/login?role=employee">تسجيل الدخول</a></p>
+</section>
+{% endblock %}

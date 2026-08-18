@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}تسجيل الدخول | مُفكر{% endblock %}
+{% block breadcrumb %}<span>تسجيل الدخول</span>{% endblock %}
+{% block content %}
+{% set errs = field_errors or {} %}
+{% set vals = values or {} %}
+<h1 class="page-title">تسجيل الدخول</h1>
+<section class="official-panel login-panel">
+  <div class="login-icon" aria-hidden="true">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17 8V6a5 5 0 0 0-10 0v2H5v12h14V8h-2zm-8-2a3 3 0 1 1 6 0v2H9V6zm3 9.5A1.5 1.5 0 1 1 12 14a1.5 1.5 0 0 1 0 3.5z"/>
+    </svg>
+  </div>
+  <h2>اختر نوع الحساب ثم ادخل</h2>
+  <p>حساب المدير هو الحساب الحالي المعتمد في النظام. الموظف ينشئ حسابًا جديدًا.</p>
+  {% if error %}<div class="notice danger">{{ error }}</div>{% endif %}
+  <div class="role-switch" role="tablist" aria-label="نوع الحساب">
+    <a class="role-chip {{ 'active' if selected_role != 'manager' else '' }}" href="/login?role=employee&next=/submit">موظف</a>
+    <a class="role-chip {{ 'active' if selected_role == 'manager' else '' }}" href="/login?role=manager&next=/manager">مدير</a>
+  </div>
+  <form method="post" action="/login" class="portal-form compact">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <input type="hidden" name="role" value="{{ selected_role }}">
+    <input type="hidden" name="next" value="{{ next_path }}">
+    <label class="{{ 'has-error' if errs.get('email') else '' }}">البريد
+      <input type="email" name="email" autocomplete="username" required value="{{ vals.get('email','') }}">
+      {% if errs.get('email') %}<small class="field-error">{{ errs.email }}</small>{% endif %}
+    </label>
+    <label class="{{ 'has-error' if errs.get('password') else '' }}">كلمة المرور
+      <span class="password-field">
+        <input type="password" name="password" autocomplete="current-password" required>
+        <button type="button" class="password-toggle" data-password-toggle aria-pressed="false">إظهار</button>
+      </span>
+      {% if errs.get('password') %}<small class="field-error">{{ errs.password }}</small>{% endif %}
+    </label>
+    <button class="btn primary full" type="submit">دخول {{ 'المدير' if selected_role == 'manager' else 'الموظف' }}</button>
+  </form>
+  {% if selected_role != 'manager' %}
+  <p class="login-extra">ليس لديك حساب؟ <a href="/register">إنشاء حساب موظف</a></p>
+  {% else %}
+  <p class="login-extra">استخدم بريد وكلمة مرور المدير الحالية. لا يُنشأ حساب مدير من هنا.</p>
+  {% endif %}
+</section>
+{% endblock %}

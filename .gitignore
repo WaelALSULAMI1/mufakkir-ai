@@ -1,0 +1,64 @@
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python environments and generated files
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node.js / frontend dependencies and build output
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+dist/
+build/
+.next/
+.nuxt/
+
+# Local databases, raw data, logs, and backups
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.log
+*.bak
+*.backup*
+**/data/
+raw_data/
+datasets/
+
+# Large model artifacts and checkpoints
+*.bin
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.gguf
+*.h5
+*.safetensors.index.json
+
+# Internal presentation deliverables and their working assets
+*.pptx
+website/presentation/
+README_SUBMISSION_AR.md
