@@ -245,3 +245,12 @@ The project was collaboratively developed by four team members:
 - [Model README](model/README.md)
 - [Website README](website/README.md)
 
+# mufakkir-ai
+
+## العربية
+
+منصة مدعومة بالذكاء الاصطناعي باللغة العربية لتحسين أفكار الموظفين وتحليلها وترتيبها بناءً على الجودة والإبداع والقيمة المحتملة.
+
+## English
+
+Arabic AI-supported platform that improves, analyzes, and ranks employee ideas based on quality, creativity, and potential value.

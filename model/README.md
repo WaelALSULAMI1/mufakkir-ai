@@ -46,3 +46,54 @@ setup_model_windows.bat
 لا تعدّل ملفات الأدبتر ولا تحذفها.
 
 المودل الأساسي `Qwen3-8B` ما ينحط داخل المجلد لأن حجمه كبير. يُحمَّل من كاش Hugging Face على الجهاز.
+
+---
+
+# Mufakkir Model
+
+This component reads an employee's proposal and returns an analysis ready for the platform: it clarifies the problem, suggests alternatives, and provides a recommendation. It runs locally on the device, while the website connects to it in the background. The browser does not call it directly.
+
+Mufakkir is not a general-purpose question-answering model. It is tuned for workplace proposals so that the result uses the department's language rather than a generic translation.
+
+## What do we use?
+
+The base model is `Qwen/Qwen3-8B`. A PEFT Adapter trained on Arabic proposals is applied on top of it, using the following directory:
+
+```text
+Summer_Arabic_Problem_Solver_PEFT
+```
+
+It runs on Windows with an NVIDIA GPU (CUDA). The model is loaded once with lightweight (4-bit) weights so the device can run it without unnecessary complexity.
+
+The main tools are Transformers, PEFT, and FastAPI. MLX is not used on this device.
+
+## How do you run it?
+
+The easiest option is to let the website start it. From the `website` directory, run `run_windows.bat`. It starts the model server, waits until it is ready, and then opens the platform at:
+
+```text
+http://127.0.0.1:8000
+```
+
+Do not close the `Qwen3 CUDA Server` window.
+
+On a new device, run this once:
+
+```text
+setup_model_windows.bat
+```
+
+From the website directory, run `setup_windows.bat`; after that, `run_windows.bat` is sufficient.
+
+If `Qwen3-8B` is already available in the local cache, startup usually takes one to one and a half minutes. The first load on a new device takes longer.
+
+## Files here
+
+- `setup_model_windows.bat` — one-time environment setup
+- `run_cuda_server.bat` — starts the model and adapter
+- `transformers_server_cuda.py` — analysis server
+- `Summer_Arabic_Problem_Solver_PEFT` — the approved adapter
+
+Do not modify or delete the adapter files.
+
+The base `Qwen3-8B` model is not stored in this directory because it is large. It is loaded from the Hugging Face cache on the device.
