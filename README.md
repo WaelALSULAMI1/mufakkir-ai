@@ -254,3 +254,23 @@ The project was collaboratively developed by four team members:
 ## English
 
 Arabic AI-supported platform that improves, analyzes, and ranks employee ideas based on quality, creativity, and potential value.
+
+---
+
+## لقطات الشاشة | Screenshots
+
+### الصفحة الرئيسية | Homepage
+
+![الصفحة الرئيسية / Homepage](docs/screenshots/homepage.png)
+
+### تقديم المقترح | Employee submission
+
+![تقديم المقترح / Employee submission](docs/screenshots/employee-submission.png)
+
+### نتيجة التحليل | AI analysis result
+
+![نتيجة التحليل / AI analysis result](docs/screenshots/ai-analysis-result.png)
+
+### لوحة المدير | Manager dashboard
+
+![لوحة المدير / Manager dashboard](docs/screenshots/manager-dashboard.png)
