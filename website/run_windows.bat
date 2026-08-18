@@ -6,7 +6,6 @@ for %%I in ("%~dp0..\model") do set "MODEL_DIR=%%~fI"
 set "MODEL_PORT=8090"
 set "MODEL_URL=http://127.0.0.1:%MODEL_PORT%/v1/models"
 set "MODEL_PY=%MODEL_DIR%\.venv\Scripts\python.exe"
-set "FALLBACK_PY=C:\Users\Admin\Downloads\Summer_Arabic_Problem_Solver_Best_READY\Summer_Arabic_Problem_Solver_Best\.venv\Scripts\python.exe"
 set "STATUS=%MODEL_DIR%\.server_status.txt"
 
 if not exist ".venv\Scripts\python.exe" (
@@ -20,7 +19,6 @@ if not exist "%MODEL_DIR%\run_cuda_server.bat" (
   pause
   exit /b 1
 )
-if not exist "%MODEL_PY%" if exist "%FALLBACK_PY%" set "MODEL_PY=%FALLBACK_PY%"
 if not exist "%MODEL_PY%" (
   echo Model environment not found.
   echo The CMD was waiting because the model Python is missing.
