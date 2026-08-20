@@ -97,3 +97,4 @@ If `Qwen3-8B` is already available in the local cache, startup usually takes one
 Do not modify or delete the adapter files.
 
 The base `Qwen3-8B` model is not stored in this directory because it is large. It is loaded from the Hugging Face cache on the device.
+built by Ali.
